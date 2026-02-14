@@ -1,0 +1,91 @@
+# PII Shield Configuration
+app:
+  name: "PII Shield"
+  version: "1.0.0"
+  environment: "development"
+
+detection:
+  # Minimum confidence threshold for detections
+  min_confidence: 0.60
+  # Enable NER model (requires transformers library)
+  enable_ner: true
+  # Enable regex-based detection
+  enable_regex: true
+  # Batch size for NER processing
+  ner_batch_size: 32
+  # Maximum text length per chunk for NER
+  max_chunk_length: 512
+
+classification:
+  # Risk score weights
+  weights:
+    sensitivity: 0.35
+    exposure_context: 0.25
+    data_location: 0.15
+    encryption_status: 0.15
+    access_level: 0.10
+
+compliance:
+  # Active compliance frameworks
+  active_frameworks:
+    - GDPR
+    - HIPAA
+    - PCI-DSS
+    - SOC-2
+    - ISO-27001
+  # Policy directory
+  policy_dir: "config/policies"
+
+alerting:
+  # Enable real-time alerting
+  enabled: true
+  # Minimum severity for alerts (low, medium, high, critical)
+  min_severity: "high"
+  # Cooldown period between duplicate alerts (seconds)
+  cooldown_seconds: 300
+  # Alert channels
+  channels:
+    slack: false
+    email: false
+    webhook: false
+
+reporting:
+  # Default report format
+  default_format: "json"
+  # Available formats
+  formats: ["pdf", "json", "csv"]
+  # Report retention days
+  retention_days: 90
+
+masking:
+  # Default masking strategy
+  default_strategy: "partial"
+  # Available strategies: full, partial, hash, tokenize, encrypt
+  strategies:
+    credit_card: "partial"
+    ssn: "partial"
+    email: "partial"
+    phone: "partial"
+    name: "full"
+    api_key: "full"
+    password: "full"
+
+storage:
+  # Upload directory for scanned documents
+  upload_dir: "./uploads"
+  # Report output directory
+  report_dir: "./reports"
+  # Maximum file size in MB
+  max_file_size_mb: 100
+  # Allowed file extensions
+  allowed_extensions: [".txt", ".pdf", ".docx", ".csv", ".json", ".log", ".xml"]
+
+security:
+  # Token expiry in minutes
+  token_expiry_minutes: 60
+  # Allowed CORS origins
+  cors_origins:
+    - "http://localhost:3000"
+    - "http://localhost:5173"
+  # Rate limiting (requests per minute)
+  rate_limit: 100

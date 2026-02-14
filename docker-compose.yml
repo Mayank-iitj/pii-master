@@ -1,0 +1,116 @@
+# PII Shield — Docker Compose (Production)
+version: '3.9'
+
+services:
+  # ── Backend API ──
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pii-shield-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - DATABASE_URL=postgresql+asyncpg://pii_user:pii_password@postgres:5432/pii_shield
+      - REDIS_URL=redis://redis:6379/0
+      - CORS_ORIGINS=["http://localhost:3000","https://pii-shield.example.com"]
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./uploads:/app/uploads
+      - ./reports:/app/reports
+      - ./model_cache:/app/model_cache
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - pii-network
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2'
+
+  # ── Frontend Dashboard ──
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pii-shield-dashboard
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - pii-network
+
+  # ── PostgreSQL ──
+  postgres:
+    image: postgres:16-alpine
+    container_name: pii-shield-db
+    environment:
+      POSTGRES_DB: pii_shield
+      POSTGRES_USER: pii_user
+      POSTGRES_PASSWORD: pii_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pii_user -d pii_shield"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - pii-network
+
+  # ── Redis (caching & rate limiting) ──
+  redis:
+    image: redis:7-alpine
+    container_name: pii-shield-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    networks:
+      - pii-network
+
+  # ── Kafka (streaming ingestion) ──
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    container_name: pii-shield-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    profiles:
+      - streaming
+    networks:
+      - pii-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    container_name: pii-shield-kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+    profiles:
+      - streaming
+    networks:
+      - pii-network
+
+volumes:
+  pgdata:
+
+networks:
+  pii-network:
+    driver: bridge

@@ -1,0 +1,128 @@
+# SOC-2 Compliance Policy Rules
+framework: SOC-2
+version: "2017"
+description: "Service Organization Control 2 - Trust Services Criteria"
+effective_date: "2017-01-01"
+
+trust_service_criteria:
+  security:
+    title: "Security (Common Criteria)"
+    requirements:
+      - id: "SOC2-CC6.1"
+        description: "Logical and physical access controls"
+        pii_types: ["*"]
+        rule: "Implement logical access security over protected information assets"
+        severity: high
+
+      - id: "SOC2-CC6.3"
+        description: "Role-based access controls"
+        pii_types: ["*"]
+        rule: "Access based on authorization through role-based controls"
+        severity: high
+
+      - id: "SOC2-CC6.7"
+        description: "Transmission controls"
+        pii_types: ["*"]
+        rule: "Restrict transmission of data to authorized channels"
+        severity: high
+        checks:
+          - encryption_in_transit
+
+  availability:
+    title: "Availability"
+    requirements:
+      - id: "SOC2-A1.1"
+        description: "System availability commitments"
+        pii_types: ["*"]
+        rule: "Maintain system availability per commitments"
+        severity: medium
+
+  confidentiality:
+    title: "Confidentiality"
+    requirements:
+      - id: "SOC2-C1.1"
+        description: "Confidential information identification"
+        pii_types: ["*"]
+        rule: "Identify and classify confidential information"
+        severity: high
+
+      - id: "SOC2-C1.2"
+        description: "Confidential information disposal"
+        pii_types: ["*"]
+        rule: "Dispose of confidential information per policy"
+        severity: high
+
+  privacy:
+    title: "Privacy"
+    requirements:
+      - id: "SOC2-P1.1"
+        description: "Privacy notice"
+        pii_types: ["name", "email", "phone", "address", "dob", "ssn"]
+        rule: "Provide notice about privacy practices"
+        severity: high
+
+      - id: "SOC2-P3.1"
+        description: "Collection limitation"
+        pii_types: ["*"]
+        rule: "Collect personal information only for identified purposes"
+        severity: high
+
+      - id: "SOC2-P4.1"
+        description: "Use and retention"
+        pii_types: ["*"]
+        rule: "Limit use and retention to identified purposes"
+        severity: high
+
+      - id: "SOC2-P6.1"
+        description: "Quality"
+        pii_types: ["*"]
+        rule: "Maintain accurate, complete personal information"
+        severity: medium
+
+      - id: "SOC2-P8.1"
+        description: "Unauthorized access"
+        pii_types: ["*"]
+        rule: "Protect against unauthorized access to personal information"
+        severity: critical
+        checks:
+          - encryption_at_rest
+          - access_logging
+          - intrusion_detection
+
+data_rules:
+  retention:
+    rule: "Data retained only as needed for service commitments"
+    violation_severity: high
+
+  logging:
+    prohibited_fields: ["password", "api_key", "token", "credit_card", "ssn"]
+    rule: "Sensitive data must not appear in service logs"
+    violation_severity: critical
+
+  access_control:
+    rule: "Principle of least privilege with periodic access reviews"
+    violation_severity: high
+
+sensitivity_mapping:
+  critical:
+    - ssn
+    - credit_card
+    - password
+    - api_key
+    - token
+  high:
+    - health_record
+    - bank_account
+    - passport
+    - aadhaar
+    - pan_card
+  medium:
+    - name
+    - email
+    - phone
+    - address
+    - dob
+  low:
+    - username
+    - ip_address
+    - job_title

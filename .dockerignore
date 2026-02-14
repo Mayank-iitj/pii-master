@@ -1,0 +1,52 @@
+# Dependencies
+.venv/
+venv/
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Git
+.git/
+.gitignore
+
+# Test & coverage
+.pytest_cache/
+htmlcov/
+.coverage
+tests/
+
+# Docs / non-essential
+README.md
+*.md
+docs/
+
+# Environment files (secrets)
+.env
+.env.local
+.env.example
+
+# Frontend (built separately)
+frontend/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Database (local dev only)
+*.db
+*.sqlite3
+
+# Reports & uploads (mounted as volumes)
+reports/
+uploads/
+model_cache/
+
+# Backups
+*.bak

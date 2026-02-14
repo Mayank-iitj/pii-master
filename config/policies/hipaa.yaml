@@ -1,0 +1,124 @@
+# HIPAA Compliance Policy Rules
+framework: HIPAA
+version: "1996"
+description: "Health Insurance Portability and Accountability Act"
+effective_date: "1996-08-21"
+
+rules:
+  privacy_rule:
+    title: "HIPAA Privacy Rule"
+    requirements:
+      - id: "HIPAA-PR-1"
+        description: "Protected Health Information (PHI) safeguards"
+        pii_types: ["health_record", "diagnosis", "medication", "treatment", "lab_result", "insurance_id"]
+        rule: "PHI must be protected with administrative, physical, and technical safeguards"
+        severity: critical
+
+      - id: "HIPAA-PR-2"
+        description: "Minimum necessary standard"
+        pii_types: ["health_record", "diagnosis"]
+        rule: "Only minimum necessary PHI should be used or disclosed"
+        severity: high
+
+      - id: "HIPAA-PR-3"
+        description: "Patient authorization"
+        pii_types: ["health_record", "diagnosis", "medication", "treatment"]
+        rule: "Written authorization required for most uses and disclosures of PHI"
+        severity: critical
+
+  security_rule:
+    title: "HIPAA Security Rule"
+    requirements:
+      - id: "HIPAA-SR-1"
+        description: "Administrative safeguards"
+        pii_types: ["health_record", "diagnosis", "ssn", "insurance_id"]
+        rule: "Security management process, security officer, workforce training"
+        severity: critical
+
+      - id: "HIPAA-SR-2"
+        description: "Technical safeguards"
+        pii_types: ["health_record", "diagnosis"]
+        rule: "Access control, audit controls, integrity controls, transmission security"
+        severity: critical
+        checks:
+          - encryption_at_rest
+          - encryption_in_transit
+          - access_logging
+          - integrity_verification
+
+      - id: "HIPAA-SR-3"
+        description: "Physical safeguards"
+        pii_types: ["*"]
+        rule: "Facility access controls, workstation use and security, device and media controls"
+        severity: high
+
+  breach_notification:
+    title: "HIPAA Breach Notification Rule"
+    requirements:
+      - id: "HIPAA-BN-1"
+        description: "Individual notification"
+        pii_types: ["health_record", "diagnosis", "ssn"]
+        rule: "Notify affected individuals within 60 days of breach discovery"
+        severity: critical
+
+      - id: "HIPAA-BN-2"
+        description: "HHS notification"
+        pii_types: ["health_record", "diagnosis"]
+        rule: "Notify HHS for breaches affecting 500+ individuals"
+        severity: critical
+
+phi_identifiers:
+  - name
+  - address
+  - dob
+  - phone
+  - email
+  - ssn
+  - medical_record_number
+  - health_plan_id
+  - account_number
+  - certificate_number
+  - vehicle_identifier
+  - device_identifier
+  - web_url
+  - ip_address
+  - biometric
+  - photo
+  - any_unique_identifier
+
+data_rules:
+  retention:
+    min_retention_years: 6
+    rule: "HIPAA records must be retained for minimum 6 years"
+    violation_severity: high
+
+  logging:
+    prohibited_fields: ["diagnosis", "medication", "treatment", "health_record"]
+    rule: "PHI must not appear in application logs"
+    violation_severity: critical
+
+  access_control:
+    rule: "Role-based access with audit logging required for all PHI access"
+    violation_severity: critical
+
+sensitivity_mapping:
+  critical:
+    - health_record
+    - diagnosis
+    - medication
+    - treatment
+    - lab_result
+    - ssn
+    - medical_record_number
+  high:
+    - insurance_id
+    - health_plan_id
+    - dob
+    - biometric
+  medium:
+    - name
+    - phone
+    - email
+    - address
+  low:
+    - ip_address

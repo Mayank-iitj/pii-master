@@ -1,0 +1,101 @@
+# PCI-DSS Compliance Policy Rules
+framework: PCI-DSS
+version: "4.0"
+description: "Payment Card Industry Data Security Standard"
+effective_date: "2022-03-31"
+
+requirements:
+  requirement_3:
+    title: "Protect stored account data"
+    rules:
+      - id: "PCI-3.1"
+        description: "Keep cardholder data storage to a minimum"
+        pii_types: ["credit_card", "cvv", "card_expiry", "cardholder_name"]
+        rule: "Minimize storage of cardholder data"
+        severity: critical
+
+      - id: "PCI-3.4"
+        description: "Render PAN unreadable anywhere it is stored"
+        pii_types: ["credit_card"]
+        rule: "PAN must be rendered unreadable using encryption, hashing, truncation, or tokenization"
+        severity: critical
+        checks:
+          - encryption_at_rest
+          - tokenization
+          - masking
+
+      - id: "PCI-3.5"
+        description: "Protect stored authentication data"
+        pii_types: ["cvv", "pin", "magnetic_stripe"]
+        rule: "Do not store sensitive authentication data after authorization"
+        severity: critical
+
+  requirement_4:
+    title: "Encrypt transmission of cardholder data"
+    rules:
+      - id: "PCI-4.1"
+        description: "Use strong cryptography for transmission"
+        pii_types: ["credit_card", "cvv", "cardholder_name"]
+        rule: "Cardholder data must be encrypted during transmission over open networks"
+        severity: critical
+        checks:
+          - encryption_in_transit
+          - tls_version
+
+  requirement_6:
+    title: "Develop and maintain secure systems"
+    rules:
+      - id: "PCI-6.5"
+        description: "Prevent common coding vulnerabilities"
+        pii_types: ["credit_card", "cvv"]
+        rule: "Applications must not log or expose cardholder data"
+        severity: critical
+
+  requirement_7:
+    title: "Restrict access to cardholder data"
+    rules:
+      - id: "PCI-7.1"
+        description: "Limit access to system components"
+        pii_types: ["credit_card", "bank_account"]
+        rule: "Access restricted to need-to-know basis"
+        severity: high
+
+  requirement_10:
+    title: "Log and monitor access"
+    rules:
+      - id: "PCI-10.1"
+        description: "Audit trails for all access"
+        pii_types: ["credit_card", "bank_account"]
+        rule: "All access to cardholder data must be logged"
+        severity: high
+
+data_rules:
+  retention:
+    rule: "Cardholder data must not be stored beyond business need"
+    violation_severity: critical
+
+  logging:
+    prohibited_fields: ["credit_card", "cvv", "pin", "magnetic_stripe"]
+    allowed_masked: true
+    mask_format: "show_last_4"
+    rule: "Full PAN must never appear in logs"
+    violation_severity: critical
+
+  storage:
+    prohibited_fields: ["cvv", "pin", "magnetic_stripe"]
+    rule: "Sensitive authentication data must never be stored post-authorization"
+    violation_severity: critical
+
+sensitivity_mapping:
+  critical:
+    - credit_card
+    - cvv
+    - pin
+    - magnetic_stripe
+    - bank_account
+  high:
+    - cardholder_name
+    - card_expiry
+  medium:
+    - billing_address
+  low: []

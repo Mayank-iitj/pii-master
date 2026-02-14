@@ -1,0 +1,101 @@
+# ISO-27001 Compliance Policy Rules
+framework: ISO-27001
+version: "2022"
+description: "Information Security Management System"
+effective_date: "2022-10-25"
+
+controls:
+  a5_information_security_policies:
+    title: "A.5 Information Security Policies"
+    requirements:
+      - id: "ISO-A5.1"
+        description: "Policies for information security"
+        pii_types: ["*"]
+        rule: "Information security policy must be defined, approved, published, and communicated"
+        severity: high
+
+  a8_asset_management:
+    title: "A.8 Asset Management"
+    requirements:
+      - id: "ISO-A8.2"
+        description: "Classification of information"
+        pii_types: ["*"]
+        rule: "Information must be classified according to sensitivity"
+        severity: high
+
+      - id: "ISO-A8.3"
+        description: "Handling of assets"
+        pii_types: ["*"]
+        rule: "Procedures for handling classified information must be implemented"
+        severity: high
+
+  a9_access_control:
+    title: "A.9 Access Control"
+    requirements:
+      - id: "ISO-A9.1"
+        description: "Access control policy"
+        pii_types: ["*"]
+        rule: "Access control policy based on business and security requirements"
+        severity: high
+
+      - id: "ISO-A9.4"
+        description: "System and application access control"
+        pii_types: ["password", "api_key", "token"]
+        rule: "Access to systems restricted by secure log-on procedures"
+        severity: critical
+
+  a10_cryptography:
+    title: "A.10 Cryptography"
+    requirements:
+      - id: "ISO-A10.1"
+        description: "Cryptographic controls"
+        pii_types: ["*"]
+        rule: "Policy on use of cryptographic controls for protection of information"
+        severity: critical
+        checks:
+          - encryption_at_rest
+          - encryption_in_transit
+          - key_management
+
+  a18_compliance:
+    title: "A.18 Compliance"
+    requirements:
+      - id: "ISO-A18.1"
+        description: "Compliance with legal and contractual requirements"
+        pii_types: ["*"]
+        rule: "All relevant legal, statutory, regulatory requirements must be identified"
+        severity: high
+
+data_rules:
+  retention:
+    rule: "Information retained per legal, regulatory, and business requirements"
+    violation_severity: high
+
+  logging:
+    prohibited_fields: ["password", "api_key", "token", "credit_card"]
+    rule: "Security credentials must not appear in logs"
+    violation_severity: critical
+
+sensitivity_mapping:
+  critical:
+    - password
+    - api_key
+    - token
+    - credit_card
+    - ssn
+    - encryption_key
+  high:
+    - health_record
+    - bank_account
+    - passport
+    - aadhaar
+    - pan_card
+  medium:
+    - name
+    - email
+    - phone
+    - address
+    - dob
+  low:
+    - username
+    - ip_address

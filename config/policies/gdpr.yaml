@@ -1,0 +1,133 @@
+# GDPR Compliance Policy Rules
+framework: GDPR
+version: "2016/679"
+description: "General Data Protection Regulation - EU"
+effective_date: "2018-05-25"
+
+articles:
+  article_5:
+    title: "Principles relating to processing of personal data"
+    requirements:
+      - id: "GDPR-5.1.a"
+        description: "Lawfulness, fairness and transparency"
+        pii_types: ["*"]
+        rule: "All PII processing must have lawful basis"
+        severity: critical
+
+      - id: "GDPR-5.1.b"
+        description: "Purpose limitation"
+        pii_types: ["*"]
+        rule: "Data collected for specified, explicit and legitimate purposes"
+        severity: high
+
+      - id: "GDPR-5.1.c"
+        description: "Data minimisation"
+        pii_types: ["*"]
+        rule: "Data must be adequate, relevant and limited to purpose"
+        severity: high
+
+      - id: "GDPR-5.1.f"
+        description: "Integrity and confidentiality"
+        pii_types: ["*"]
+        rule: "Appropriate security measures must be in place"
+        severity: critical
+
+  article_6:
+    title: "Lawfulness of processing"
+    requirements:
+      - id: "GDPR-6.1"
+        description: "Processing requires legal basis"
+        pii_types: ["name", "email", "phone", "address", "dob"]
+        rule: "Must have consent, contract, legal obligation, vital interest, public task, or legitimate interest"
+        severity: critical
+
+  article_9:
+    title: "Processing of special categories of personal data"
+    requirements:
+      - id: "GDPR-9.1"
+        description: "Prohibition of processing special categories"
+        pii_types: ["health_record", "diagnosis", "biometric", "genetic", "racial_origin", "political_opinion", "religious_belief", "sexual_orientation"]
+        rule: "Special category data requires explicit consent or specific exemption"
+        severity: critical
+
+  article_32:
+    title: "Security of processing"
+    requirements:
+      - id: "GDPR-32.1.a"
+        description: "Pseudonymisation and encryption"
+        pii_types: ["*"]
+        rule: "Personal data must be encrypted at rest and in transit"
+        severity: critical
+        checks:
+          - encryption_at_rest
+          - encryption_in_transit
+          - pseudonymisation
+
+      - id: "GDPR-32.1.b"
+        description: "Confidentiality and integrity"
+        pii_types: ["*"]
+        rule: "Ongoing confidentiality, integrity, availability and resilience"
+        severity: high
+
+  article_33:
+    title: "Notification of personal data breach"
+    requirements:
+      - id: "GDPR-33.1"
+        description: "Breach notification to authority"
+        pii_types: ["*"]
+        rule: "Notify supervisory authority within 72 hours of breach"
+        severity: critical
+
+  article_35:
+    title: "Data protection impact assessment"
+    requirements:
+      - id: "GDPR-35.1"
+        description: "DPIA requirement"
+        pii_types: ["health_record", "biometric", "criminal_record"]
+        rule: "DPIA required for high-risk processing"
+        severity: high
+
+data_rules:
+  retention:
+    max_retention_days: 365
+    rule: "Data must not be retained longer than necessary"
+    violation_severity: high
+
+  cross_border:
+    allowed_regions: ["EU", "EEA"]
+    rule: "Transfer outside EU/EEA requires adequate safeguards"
+    violation_severity: critical
+
+  logging:
+    prohibited_fields: ["password", "credit_card", "ssn", "health_record"]
+    rule: "Sensitive PII must not appear in application logs"
+    violation_severity: critical
+
+  access_control:
+    rule: "Access to PII must be role-based and audited"
+    violation_severity: high
+
+sensitivity_mapping:
+  critical:
+    - credit_card
+    - ssn
+    - passport
+    - health_record
+    - diagnosis
+    - bank_account
+    - aadhaar
+    - api_key
+    - password
+  high:
+    - pan_card
+    - dob
+    - address
+    - phone
+    - biometric
+  medium:
+    - email
+    - name
+    - ip_address
+  low:
+    - username
+    - job_title

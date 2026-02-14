@@ -1,0 +1,50 @@
+# Virtual environments
+.venv/
+venv/
+
+# Python caches
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node (frontend deps installed during build)
+node_modules/
+frontend/node_modules/
+
+# Local databases
+*.db
+*.sqlite3
+pii_shield.db
+
+# Large / runtime-only directories
+model_cache/
+uploads/*
+reports/*
+htmlcov/
+.coverage
+
+# Tests (not needed at runtime)
+tests/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Docker (not used on Vercel)
+Dockerfile
+frontend/Dockerfile
+docker-compose.yml
+gunicorn.conf.py
+.docker/
+.dockerignore
+
+# Backup files
+*.bak
+*.log
+
+# Env files (set via Vercel dashboard)
+.env
+.env.local
+.env.example

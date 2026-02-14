@@ -1,0 +1,16 @@
+{
+  "include": ["src", "tests"],
+  "executionEnvironments": [
+    {
+      "root": ".",
+      "extraPaths": ["."],
+      "pythonVersion": "3.11"
+    }
+  ],
+  "reportMissingModuleSource": "none",
+  "reportMissingImports": "warning",
+  "pythonVersion": "3.11",
+  "pythonPlatform": "Windows",
+  "venvPath": ".",
+  "venv": ".venv"
+}
